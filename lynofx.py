@@ -159,9 +159,9 @@ try:
         sys.stderr.write("\n")
     
     if options.raw:
-        print response.as_string()
+        sys.stdout.write(response.as_string() + "\n")
     else:
-        print response.as_xml()
+        sys.stdout.write(response.as_xml() + "\n")
 
 except ofx.Error, exception:
     if options.verbose:
