@@ -70,6 +70,8 @@ parser.add_option("-b", "--bankid", dest="bankid",
                   help="ID of the bank (a.k.a. routing number)")
 parser.add_option("-U", "--username", "--user", dest="username", 
                   help="username to log in as")
+parser.add_option("-P", "--password", dest="password", 
+                  help="password to use for login")
 (options, args) = parser.parse_args()
 
 if len(args) != 1:
@@ -92,6 +94,7 @@ if options.verbose:
     if options.acctid:   print "  acctid:   %s" % options.acctid
     if options.bankid:   print "  bankid:   %s" % options.bankid
     if options.username: print "  username: %s" % options.username
+    if options.password: print "  password: %s" % ("<hidden>" if options.username else "<unset>")
     print
 
 # FIXME: should check to make sure all required options for this action were provided.
@@ -108,7 +111,8 @@ if action != "profile":
     if not options.username:
         terminal.write("Enter account username: ")
         options.username = sys.stdin.readline().rstrip()
-    password = getpass.getpass("Enter account password: ")
+    if not options.password:
+        options.password = getpass.getpass("Enter account password: ")
 
 institution = ofx.Institution(ofx_org=options.org, 
                               ofx_url=options.url, 
@@ -138,10 +142,10 @@ try:
         response = client.get_fi_profile(institution)
 
     elif action == "accounts":
-        response = client.get_account_info(institution, options.username, password)
+        response = client.get_account_info(institution, options.username, options.password)
 
     elif action == "statement":
-        response = client.get_statement(account, options.username, password)
+        response = client.get_statement(account, options.username, options.password)
     
     if options.verbose:
         print
