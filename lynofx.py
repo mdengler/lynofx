@@ -75,27 +75,27 @@ parser.add_option("-P", "--password", dest="password",
 (options, args) = parser.parse_args()
 
 if len(args) != 1:
-    print "Call lynofx.py with one and only one action (use --help for more info)."
+    sys.stderr.write("Call lynofx.py with one and only one action (use --help for more info).\n")
     sys.exit(1)
 
 action = args[0]  # just for clarity
 
 if action not in actions:
-    print "Unrecognized option '%s' (use --help for more info)." % action
+    sys.stderr.write("Unrecognized option '%s' (use --help for more info).\n" % action)
     sys.exit(1)
 
 if options.verbose:
-    print "Using options:"
-    print "  action:   %s" % action
-    if options.fid:      print "  fid:      %s" % options.fid
-    if options.org:      print "  org:      %s" % options.org
-    if options.url:      print "  url:      %s" % options.url
-    if options.accttype: print "  accttype: %s" % options.accttype
-    if options.acctid:   print "  acctid:   %s" % options.acctid
-    if options.bankid:   print "  bankid:   %s" % options.bankid
-    if options.username: print "  username: %s" % options.username
-    if options.password: print "  password: %s" % ("<hidden>" if options.username else "<unset>")
-    print
+    sys.stderr.write("Using options:\n")
+    sys.stderr.write("  action:   %s\n" % action)
+    if options.fid:      sys.stderr.write("  fid:      %s\n" % options.fid)
+    if options.org:      sys.stderr.write("  org:      %s\n" % options.org)
+    if options.url:      sys.stderr.write("  url:      %s\n" % options.url)
+    if options.accttype: sys.stderr.write("  accttype: %s\n" % options.accttype)
+    if options.acctid:   sys.stderr.write("  acctid:   %s\n" % options.acctid)
+    if options.bankid:   sys.stderr.write("  bankid:   %s\n" % options.bankid)
+    if options.username: sys.stderr.write("  username: %s\n" % options.username)
+    if options.password: sys.stderr.write("  password: %s\n" % ("<hidden>" if options.username else "<unset>"))
+    sys.stderr.write("\n")
 
 # FIXME: should check to make sure all required options for this action were provided.
 
@@ -134,9 +134,9 @@ try:
         opener = urllib2.build_opener(http_handler, https_handler)
         urllib2.install_opener(opener)
         
-        print "HTTP Debug Output:"
-        print "=================="
-        print
+        sys.stderr.write("HTTP Debug Output:\n")
+        sys.stderr.write("==================\n")
+        sys.stderr.write("\n")
     
     if action == "profile":
         response = client.get_fi_profile(institution)
@@ -148,15 +148,15 @@ try:
         response = client.get_statement(account, options.username, options.password)
     
     if options.verbose:
-        print
-        print "Request Message:"
-        print "================"
-        print
-        print client.get_request_message() 
-        print
-        print "Response Message:"
-        print "================="
-        print
+        sys.stderr.write("\n")
+        sys.stderr.write("Request Message:\n")
+        sys.stderr.write("================\n")
+        sys.stderr.write("\n")
+        sys.stderr.write(client.get_request_message())
+        sys.stderr.write("\n")
+        sys.stderr.write("Response Message:\n")
+        sys.stderr.write("=================\n")
+        sys.stderr.write("\n")
     
     if options.raw:
         print response.as_string()
@@ -165,12 +165,12 @@ try:
 
 except ofx.Error, exception:
     if options.verbose:
-        print
-        print "Request Message:"
-        print "================"
-        print
-        print client.get_request_message() 
-        print
+        sys.stderr.write("\n")
+        sys.stderr.write("Request Message:\n")
+        sys.stderr.write("================\n")
+        sys.stderr.write("\n")
+        sys.stderr.write(client.get_request_message() + "\n")
+        sys.stderr.write("\n")
     
     sys.stderr.write("*** Server returned an OFX error:\n")
     sys.stderr.write(str(exception))
@@ -179,12 +179,12 @@ except ofx.Error, exception:
 
 except urllib2.HTTPError, exception:
     if options.verbose:
-        print
-        print "Request Message:"
-        print "================"
-        print
-        print client.get_request_message() 
-        print
+        sys.stderr.write("\n")
+        sys.stderr.write("Request Message:\n")
+        sys.stderr.write("================\n")
+        sys.stderr.write("\n")
+        sys.stderr.write(client.get_request_message() + "\n")
+        sys.stderr.write("\n")
     
     sys.stderr.write("*** Server returned an HTTP error:\n")
     sys.stderr.write(str(exception))
